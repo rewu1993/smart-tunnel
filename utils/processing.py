@@ -16,7 +16,7 @@ def clean_key(k):
             if not scan_digit(w):
 #             for w_s in w.split('-'):
 #                 if not "." in w_s:
-                clean_words.append(w)
+                clean_words.append(w.lower())
     return clean_words
            
 #encoding using the words set
