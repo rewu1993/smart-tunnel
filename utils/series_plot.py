@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+import numpy as np
+
 
 def compute_fig_info(num_display):
     #split into several figures if number of plots exceed 9
@@ -12,11 +14,15 @@ def compute_fig_info(num_display):
     return num_display
 
 
-def plot_multi_series(series_list,index_list = [], title_names = []):
+def plot_multi_series(series_list,index_list = [], title_names = [], x_series = []):
+    plt.rcParams.update({'font.size': 18})
+    
     if not len(index_list):
         num_display = len(series_list)
     else: num_display = len(index_list)
     display_list = compute_fig_info(num_display)
+    if not len(x_series):
+        x_series = np.linspace(0,len(series_list[0])-1,len(series_list[0]))
             
     for base,num_display in enumerate(display_list):
         plot_index = num_display*100+10
@@ -35,8 +41,10 @@ def plot_multi_series(series_list,index_list = [], title_names = []):
             label = "series %d"%(idx)
             if len(title_names):
                 label = title_names[idx]
-            ax.plot(series_list[idx],label=label)
+            ax.plot(x_series,series_list[idx],label=label)
             ax.legend(loc=0)
+    plt.xlabel('Sample Points')
+    plt.ylabel('Measuremnts')
     plt.show()
     return True
     

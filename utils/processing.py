@@ -39,3 +39,52 @@ def find_uncorr_pair(coor_mat,thre = 0.9):
          coord_list.append((i,j))
     coord_list = list(set(tuple(sorted(l)) for l in coord_list))
     return coord_list
+
+def search_k(search_s,keys,not_s=[],thre=0.8):
+    ret = []
+    for k in keys:
+        count = 0
+        skip_flag = False
+        k_w_list = clean_key(k)
+        for n_w in not_s:
+            if n_w.lower() in k_w_list:
+                skip_flag = True
+                continue
+        if not skip_flag:
+            for s_w in search_s:
+                if s_w.lower() in k_w_list:
+                    count+=1
+            prec = count/len(search_s)
+            if prec>thre:
+                ret.append(k)
+    return ret
+            
+            
+def get_series_data(data,keys,unit=True):
+    sample_keys = keys
+    if unit:
+        sample_data = data[sample_keys][1:].astype('float')
+        units = data[sample_keys][:1].values[0]
+    else:
+        sample_data = data[sample_keys].astype('float')
+        units = len(sample_keys)*[0]
+    series_data = sample_data.values.transpose()
+    keys_with_unit = []
+    for i,k in enumerate(sample_keys):
+        u = str(units[i])
+        comp = k+" ; "
+        if unit:
+            comp += u
+        keys_with_unit.append(comp)
+    return (series_data,keys_with_unit)
+def explore_uncor(uncor_pair,series_data,keys):
+    idx_pool = []
+    for pair in uncor_pair:
+        idx_0,idx_1 = pair[0],pair[1]
+        print ("uncorrelate parameters: "+keys[idx_0]+" "+ keys[idx_1])
+        idx_pool.append(idx_0)
+        idx_pool.append(idx_1)
+    idx_pool = list(set(idx_pool))
+    if len(idx_pool):
+        plot_multi_series(series_data,index_list=idx_pool,title_names=sample_keys)
+        
